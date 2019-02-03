@@ -1,35 +1,71 @@
-from flask import Flask
-import gdal
+from flask import Flask, request, render_template, jsonify, make_response
+import gdal, osr
 import os, os.path
+from customZonalStats import zonal_stats
+#from zonal_stats import zonal_stats
+
 app = Flask(__name__)
+
+wellShapefilePath = r"C:\scratch\scatch\nitrate_wells2.shp"
+nitrateRasterFolder = r"C:\Users\Robert\Documents\Grad School\GEOG777\prj1\NitrateViewer\nitrateRasters"
 
 @app.route("/")
 def home():
     """home page contains the website"""
-    return "Hello, Flask!"
+    return render_template("index.html")
 
-@app.route("/")
+@app.route("/censustract")
+def censusTracks():
+    return render_template("cancer_tracts.geojson")
+
+
+
+@app.route("/calculate")
 def findStats():
     """function finds or calculates the observed zonal statistics and sends it to the front end for display"""
+    kValue = request.args.get("kvalue")
+
+    #if the url parameter comes up empty then return nothing because there is not anything useful to calculate yet
+    if kValue == None or kValue == "" or kValue == " " or kValue == "None":
+        print("kvalue parameter not found. finishing request")
+        return None
+    try:
+        kValue = float(kValue)
+    except:
+        print("kvalue parameter can't be converted to a number. finishing request")
+    print "k value has been succesfully found. it is: " + str(kValue)
 
 
-    return ""
 
-def calculateNitrateRaster(kValue):
-    """does the raster interpelation for the project based on a provided k value using gdal"""
-    wellShapefilePath = r"C:\Users\Robert\Documents\Grad School\GEOG777\prj1\NitrateViewer\originData\well_nitrate.shp"
     destinationPath = r"C:\Users\Robert\Documents\Grad School\GEOG777\prj1\NitrateViewer\nitrateRasters\k" + str(kValue) + ".tiff"
-    algorithmOptions = 'invdist:power='+ kValue + ':max_points=30:min_points=5'
+    
+    #if the raster does not exist then calculate the new raster
+    if os.path.isfile(destinationPath):
+        print "raster already exists. skipping over creation"
+    else:
+        print "raster does not already exist. generating new raster"
+        calculateNitrateRaster(kValue, destinationPath)
 
-    gdal.Grid(destinationPath, wellShapefilePath, outputType=gdal.GDT_Byte, zfield="nitr_ran", algorithm=algorithmOptions)
+    #perform zonal statistics on the raster
+    print "about to run zonal statistics on " + destinationPath
+    statsSummary = zonal_stats(destinationPath)
 
-    #force script to wait untill the raster has finished being generated, then return the path to the new raster
+    #convert the zonal stats results into a python dictionary and then convert into json and send out
+    statsSummaryJSON = jsonify(summary=statsSummary)
 
-    return destinationPath
+    #package the json into a response object and send to client machine
+    response = make_response(statsSummaryJSON)
+    response.headers['content-type'] = 'application/json'
+    return response
 
-def findRaster(kValue) :
-    """searches the static job directly to determine if the raster 
-    has already been generated for the specific k value. This should cut 
-    down on the time it takes to run the process for future 
-    requests for the same k value """
-    return ""
+
+
+
+def calculateNitrateRaster(kValue, destinationPath):
+    """does the raster interpelation for the project based on a provided k value using gdal"""
+    print "calculate nitrate raster called!"
+    algorithmOptions = 'invdist:power='+ str(kValue) + ':max_points=30:min_points=5:nodata=-999'
+    outBounds = [294822.7680654586292803, 225108.6378120621666312, 774373.8599878594977781, 759802.2332637654617429]
+    outRasterSRS = osr.SpatialReference()
+    outRasterSRS.ImportFromEPSG(3070)
+    gdal.Grid(destinationPath, wellShapefilePath, width=1000, height=1000, outputType=gdal.GDT_Float32, zfield="nitr_ran", algorithm=algorithmOptions, outputBounds=outBounds, outputSRS=outRasterSRS)
