@@ -41,9 +41,9 @@ def zonal_stats(rasterPath):
     summaryStats = []
             
     for key in statsDict.keys():
-        mean = numpy.mean(statsDict[key])
-        std = numpy.std(statsDict[key])
-        summaryStats.append([key, mean])
+        mean = float(numpy.mean(statsDict[key]))
+        std = float(numpy.std(statsDict[key]))
+        summaryStats.append({ "id" : int(key), "mean" : mean, "std" : std})
 
     print "script finished, stats are as follows"
     print summaryStats

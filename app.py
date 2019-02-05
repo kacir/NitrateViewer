@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, jsonify, make_response
 import gdal, osr
 import os, os.path
 from customZonalStats import zonal_stats
+import json
 #from zonal_stats import zonal_stats
 
 app = Flask(__name__)
@@ -51,9 +52,12 @@ def findStats():
     statsSummary = zonal_stats(destinationPath)
 
     #convert the zonal stats results into a python dictionary and then convert into json and send out
-    statsSummaryJSON = jsonify(summary=statsSummary)
+    print "converting list of lists to JSON"
+    statsSummaryJSON = json.dumps({"stats" : statsSummary})
+    print statsSummaryJSON
 
     #package the json into a response object and send to client machine
+    print "converting JSON string into response to client machine"
     response = make_response(statsSummaryJSON)
     response.headers['content-type'] = 'application/json'
     return response
