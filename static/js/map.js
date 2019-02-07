@@ -25,13 +25,15 @@ require([
     });
 
     var map = new Map({
-      basemap: "streets",
+      basemap: "gray",
       layers: [layer]
     });
 
     var view = new MapView({
       container: "viewDiv",
-      map: map
+      map: map,
+      zoom : 7,
+      center : [ -89.56 , 44.71]
     });
 
   });
