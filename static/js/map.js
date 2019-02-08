@@ -10,31 +10,73 @@
 require([
     "esri/Map",
     "esri/views/MapView",
-    "esri/layers/WMSLayer"
+    "esri/layers/WMSLayer",
+    "esri/widgets/LayerList",
+    "esri/layers/FeatureLayer",
+    "esri/PopupTemplate"
   ], function(
     Map,
     MapView,
-    WMSLayer
+    WMSLayer,
+    LayerList,
+    FeatureLayer,
+    PopupTemplate
   ) {
 
     var layer = new WMSLayer({
-      url: "http://giswebservices.massgis.state.ma.us/geoserver/ows?",
+      url: "https://wms.qgiscloud.com/rkacir/censustract_service",
       sublayers: [{
-        name: "massgis:GISDATA.AIRPORTS_PT"
-      }]
+        name: "cancer_tracts"
+      }],
+      title : "Cancer Rates"
     });
+
+    var arcGISOnlineUrl = "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/cancer_tracts_kacir/FeatureServer/0?token=OoWHS6vgbO0OlDLMFvmUKWFcbGwFDtPdec6ecZ_cJXcnTqYFMcoO1QX-nxN-DePzCmqW2Br9ovt6EjKWGob9a0bpAd9WiwJhz9l2mu4Eofr_TLwkm6Sgu5tOJQw3Xsnh1pGYQnsIMJyDijzuClVepUEp9JqUL7V97b8pvZQxpziqCmTWfLdn7S9eVvCry1iIUSPcqvg7M350ms3vDc_A4z1mGen6KXuA9Bj_Lnk9FAviCouEiSAHygQVym8Y_4sk";
+
+    var template = {  // autocasts as new PopupTemplate()
+      title: "Census Tract",
+      content: [{
+        type: "fields",
+        fieldInfos: [{
+          fieldName: "canrate ",
+          label: "Cancer Rate",
+          format : {places : 0, digitSeparator : true},
+          visible: true
+        }, {
+          fieldName: "nitrate ",
+          label: "Nitrate Level",
+          format : {places : 0, digitSeparator : true},
+          visible: true
+        }, {
+          fieldName: "GEOID10",
+          label: "GEOID10",
+          visible: true
+        }]
+      }]
+    };
+
+    var template2 = new PopupTemplate()
+
+    var popupLayer = new FeatureLayer({url : arcGISOnlineUrl, popupEnabled : true, popupTemplate : template });
+
 
     var map = new Map({
       basemap: "gray",
-      layers: [layer]
+      layers: [layer, popupLayer]
     });
 
-    var view = new MapView({
+    var mapView = new MapView({
       container: "viewDiv",
       map: map,
       zoom : 7,
       center : [ -89.56 , 44.71]
     });
+
+    mapView.when(function(){
+     var layerList = new LayerList({view : mapView});
+
+     mapView.ui.add(layerList , "top-right");
+   });
 
   });
   /***********************************
