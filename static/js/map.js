@@ -7,21 +7,60 @@
 //making custom widgets
 //https://developers.arcgis.com/javascript/latest/sample-code/widgets-custom-widget/index.html
 
+
+
 require([
     "esri/Map",
     "esri/views/MapView",
     "esri/layers/WMSLayer",
     "esri/widgets/LayerList",
     "esri/layers/FeatureLayer",
-    "esri/PopupTemplate"
+    "esri/PopupTemplate",
+    "esri/Graphic",
+    "esri/geometry/Polygon",
+    "esri/layers/GraphicsLayer",
+    "esri/symbols/SimpleFillSymbol"
   ], function(
     Map,
     MapView,
     WMSLayer,
     LayerList,
     FeatureLayer,
-    PopupTemplate
+    PopupTemplate,
+    Graphic,
+    Polygon,
+    GraphicsLayer,
+    SimpleFillSymbol
   ) {
+
+    function geoJsonToGraphics (data) {
+      var graphicsArray = [];
+
+      var symbolTemplate = new SimpleFillSymbol ({
+        color : [0,0,0],
+        style : "solid"
+      });
+    
+      for (i = 0; i < data.features; i++){
+        var poly = new Polygon({
+          rings: feature.geometry.coordinates,
+          spatialReference : {wkid : 4326}
+        });
+    
+        var tempGrahpic = new Graphic ({
+          geometry: poly,
+          symbol : symbolTemplate
+        });
+    
+        graphicsArray.push(tempGrahpic);
+      }
+      var masterGraphicLayer = new GraphicsLayer ({graphics : graphicsArray });
+      
+      //add the graphics layer to the map
+      map.add(masterGraphicLayer);
+    
+    };
+    
 
     var layer = new WMSLayer({
       url: "https://wms.qgiscloud.com/rkacir/censustract_service",
@@ -59,10 +98,12 @@ require([
 
     var popupLayer = new FeatureLayer({url : arcGISOnlineUrl, popupEnabled : true, popupTemplate : template });
 
+    //add kml layer to map
+    var testLayer = KMLLayer({url : "/test.kml"});
 
     var map = new Map({
       basemap: "gray",
-      layers: [layer, popupLayer]
+      layers: [layer, popupLayer, testLayer]
     });
 
     var mapView = new MapView({
@@ -77,6 +118,9 @@ require([
 
      mapView.ui.add(layerList , "top-right");
    });
+
+   //request json data from backend
+   $.ajax({url: "/censustract" , success : geoJsonToGraphics});
 
   });
   /***********************************
