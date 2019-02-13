@@ -17,7 +17,7 @@ require([
     "esri/layers/FeatureLayer",
     "esri/PopupTemplate",
     "esri/Graphic",
-    "esri/geometry/Polygon",
+    "esri/geometry/Point",
     "esri/layers/GraphicsLayer",
     "esri/symbols/SimpleFillSymbol"
   ], function(
@@ -28,34 +28,59 @@ require([
     FeatureLayer,
     PopupTemplate,
     Graphic,
-    Polygon,
+    Point,
     GraphicsLayer,
     SimpleFillSymbol
   ) {
 
-    function geoJsonToGraphics (data) {
+    function geoJsonToGraphics (data, nitrateSummary) {
+      console.log("before parsing nitrate");
+      console.log(nitrateSummary);
+      console.log("before parsing data");
+      console.log(data);
+
+
+
+      console.log("starting to build graphics array to add to map");
+      data = JSON.parse(data[0]);//convert from string into an actual json object
+      nitrateSummary = nitrateSummary[2].responseJSON.stats
+
+      console.log("this is the raw data: ");
+      console.log(data);
+      console.log("this is the nitratesummary data");
+      console.log(nitrateSummary);
+      
       var graphicsArray = [];
 
-      var symbolTemplate = new SimpleFillSymbol ({
-        color : [0,0,0],
-        style : "solid"
-      });
+      var markerSymbol = {
+        type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+        color: [226, 119, 40],
+        outline: { // autocasts as new SimpleLineSymbol()
+          color: [255, 255, 255],
+          width: 2
+        }
+      };
     
-      for (i = 0; i < data.features; i++){
-        var poly = new Polygon({
-          rings: feature.geometry.coordinates,
-          spatialReference : {wkid : 4326}
-        });
+      for (i = 0; i < data.features.length; i++){
+        var feature = data.features[i];
+        var tempPoint = {
+          type : "point",
+          longitude : feature.geometry.coordinates[0],
+          latitude : feature.geometry.coordinates[1]
+        };
     
         var tempGrahpic = new Graphic ({
-          geometry: poly,
-          symbol : symbolTemplate
+          geometry: tempPoint,
+          symbol: markerSymbol
         });
     
         graphicsArray.push(tempGrahpic);
+        //mapView.graphics.add(tempGrahpic);
       }
-      var masterGraphicLayer = new GraphicsLayer ({graphics : graphicsArray });
+      var masterGraphicLayer = new GraphicsLayer ({graphics : graphicsArray, title: "Nitrate Levels" });
       
+      console.log("finished getting graphics together adding to map")
+
       //add the graphics layer to the map
       map.add(masterGraphicLayer);
     
@@ -77,12 +102,12 @@ require([
       content: [{
         type: "fields",
         fieldInfos: [{
-          fieldName: "canrate ",
+          fieldName: "canrate",
           label: "Cancer Rate",
           format : {places : 0, digitSeparator : true},
           visible: true
         }, {
-          fieldName: "nitrate ",
+          fieldName: "nitrate",
           label: "Nitrate Level",
           format : {places : 0, digitSeparator : true},
           visible: true
@@ -96,14 +121,11 @@ require([
 
     var template2 = new PopupTemplate()
 
-    var popupLayer = new FeatureLayer({url : arcGISOnlineUrl, popupEnabled : true, popupTemplate : template });
-
-    //add kml layer to map
-    var testLayer = KMLLayer({url : "/test.kml"});
+    var popupLayer = new FeatureLayer({url : arcGISOnlineUrl, popupEnabled : true, popupTemplate : template, title : "Cancer Rates Popup" });
 
     var map = new Map({
       basemap: "gray",
-      layers: [layer, popupLayer, testLayer]
+      layers: [layer, popupLayer]
     });
 
     var mapView = new MapView({
@@ -119,8 +141,26 @@ require([
      mapView.ui.add(layerList , "top-right");
    });
 
-   //request json data from backend
-   $.ajax({url: "/censustract" , success : geoJsonToGraphics});
+   d3.select("#submit").on("click", function(){
+    var kValue = $("input").val();
+
+    if (isNaN(kValue)) {
+        alert("value typed and submitted is not a number");
+    } else {
+        console.log("button has been pressed");
+        alert("button pressed for value: " + kValue);
+
+        //make a request to the backend for a kml file, then add the kml file to the map
+        //request json data from backend
+        //$.ajax({url: "/censustract" , success : geoJsonToGraphics});
+
+        $.when($.ajax("/censustract") , $.ajax("/calculate?kvalue="+ kValue))
+          .done(geoJsonToGraphics)
+          .fail(alert("the calculate request has failed"));
+    }
+});
+
+
 
   });
   /***********************************

@@ -1,5 +1,14 @@
 import numpy, gdal
 
+def customListSort(a,b):
+    if a["id"] > b["id"]:
+        return -1
+    elif a["id"] == b["id"]:
+        return 0
+    else:
+        return -1
+
+
 def zonal_stats(rasterPath):
     pass
 
@@ -44,6 +53,10 @@ def zonal_stats(rasterPath):
         mean = float(numpy.mean(statsDict[key]))
         std = float(numpy.std(statsDict[key]))
         summaryStats.append({ "id" : int(key), "mean" : mean, "std" : std})
+
+    #return all of results in order of id
+    summaryStats.sort(customListSort)
+    summaryStats.reverse()
 
     print "script finished, stats are as follows"
     print summaryStats

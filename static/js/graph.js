@@ -49,17 +49,3 @@ graphInterior.append("rect")
     .attr("height" , graphHeight)
     .attr("style", "fill:rgb(230,230,230)");
 
-d3.select("#submit").on("click", function(){
-    var kValue = $("input").val();
-
-    if (isNaN(kValue)) {
-        alert("value typed and submitted is not a number");
-    } else {
-        console.log("button has been pressed");
-        alert("button pressed for value: " + kValue);
-
-        //make a request to the backend for a kml file, then add the kml file to the map
-    }
-
-
-});
