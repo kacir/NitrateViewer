@@ -7,7 +7,14 @@
 //making custom widgets
 //https://developers.arcgis.com/javascript/latest/sample-code/widgets-custom-widget/index.html
 
+function searchArray (subjectArray, targetID) {
 
+  for (i = 0; i < subjectArray.length; i++ ){
+    if (subjectArray[i].id == targetID){
+      return i;
+    };
+  };
+};
 
 require([
     "esri/Map",
@@ -60,9 +67,35 @@ require([
           width: 2
         }
       };
+
+      var pointPopuptemplate = {
+        title: "Census Tract Point",
+        content: [{
+          type: "fields",
+          fieldInfos: [{
+            fieldName: "id"
+          }, {
+            fieldName: "mean"
+          }, {
+            fieldName: "std"
+          }]
+        }]
+      };
     
       for (i = 0; i < data.features.length; i++){
         var feature = data.features[i];
+        var summaryIndex = searchArray(nitrateSummary, feature.properties.id);
+        var featureSummary = nitrateSummary[i];
+        nitrateSummary.splice(summaryIndex, 1);
+
+
+        if (featureSummary === undefined){
+          var pointAttributes = {id : -9999, mean : 0, std : 0};
+        } else {
+          var pointAttributes = {id : featureSummary.id, mean : featureSummary.mean, std : featureSummary.std};
+        }
+
+
         var tempPoint = {
           type : "point",
           longitude : feature.geometry.coordinates[0],
@@ -71,7 +104,9 @@ require([
     
         var tempGrahpic = new Graphic ({
           geometry: tempPoint,
-          symbol: markerSymbol
+          symbol: markerSymbol,
+          attributes : pointAttributes,
+          popupTemplate : pointPopuptemplate
         });
     
         graphicsArray.push(tempGrahpic);
