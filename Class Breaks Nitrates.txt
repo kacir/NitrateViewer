@@ -1,0 +1,9 @@
+Min -1.7
+Max 9.72
+
+Suggested 3 classes
+Low a < 2
+Medium a > 2 & a <4.5 
+High a >= 4.5
+
+Suggested 5 Classses

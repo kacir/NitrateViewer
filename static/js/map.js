@@ -40,30 +40,44 @@ require([
     SimpleFillSymbol
   ) {
 
-    function geoJsonToGraphics (data, nitrateSummary) {
+    function geoJsonToGraphics (data) {
       console.log("before parsing nitrate");
-      console.log(nitrateSummary);
-      console.log("before parsing data");
       console.log(data);
-
-
-
-      console.log("starting to build graphics array to add to map");
-      data = JSON.parse(data[0]);//convert from string into an actual json object
-      nitrateSummary = nitrateSummary[2].responseJSON.stats
-
-      console.log("this is the raw data: ");
-      console.log(data);
-      console.log("this is the nitratesummary data");
-      console.log(nitrateSummary);
       
       var graphicsArray = [];
 
-      var markerSymbol = {
+      var markerSymbolHigh = {
         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-        color: [226, 119, 40],
+        color: [0, 0, 255],
         outline: { // autocasts as new SimpleLineSymbol()
           color: [255, 255, 255],
+          width: 2
+        }
+      };
+
+      var markerSymbolLow = {
+        type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+        color: [176, 224, 230],
+        outline: { // autocasts as new SimpleLineSymbol()
+          color: [255, 255, 255],
+          width: 1
+        }
+      };
+
+      var markerSymbolMedium = {
+        type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+        color: [30, 144, 255],
+        outline: { // autocasts as new SimpleLineSymbol()
+          color: [255, 255, 255],
+          width: 2
+        }
+      };
+
+      var markerSymbolNoData = {
+        type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+        color: [0, 0, 0],
+        outline: { // autocasts as new SimpleLineSymbol()
+          color: [25, 25, 25],
           width: 2
         }
       };
@@ -73,26 +87,38 @@ require([
         content: [{
           type: "fields",
           fieldInfos: [{
-            fieldName: "id"
+            fieldName: "id",
+            label : "Tract ID"
           }, {
-            fieldName: "mean"
+            fieldName: "mean",
+            label : "Mean Nitrate Level",
+            format : {places : 4, digitSeparator : false}
           }, {
-            fieldName: "std"
+            fieldName: "std",
+            label : "Stand Deviation Within Tract",
+            format : {places : 4, digitSeparator : false}
           }]
         }]
       };
     
       for (i = 0; i < data.features.length; i++){
         var feature = data.features[i];
-        var summaryIndex = searchArray(nitrateSummary, feature.properties.id);
-        var featureSummary = nitrateSummary[i];
-        nitrateSummary.splice(summaryIndex, 1);
-
+        var featureSummary = feature.stats;
 
         if (featureSummary === undefined){
           var pointAttributes = {id : -9999, mean : 0, std : 0};
+          var choosenSymbol =  markerSymbolNoData;
         } else {
           var pointAttributes = {id : featureSummary.id, mean : featureSummary.mean, std : featureSummary.std};
+          //symbolize according to catagory
+          if (featureSummary.mean < 2 ) {
+            var choosenSymbol = markerSymbolLow;
+          } else if (featureSummary.mean >= 2 && featureSummary.mean < 4.5){
+            var choosenSymbol = markerSymbolMedium;
+          } else {
+            var choosenSymbol = markerSymbolHigh;
+          }
+          
         }
 
 
@@ -104,7 +130,7 @@ require([
     
         var tempGrahpic = new Graphic ({
           geometry: tempPoint,
-          symbol: markerSymbol,
+          symbol: choosenSymbol,
           attributes : pointAttributes,
           popupTemplate : pointPopuptemplate
         });
@@ -189,9 +215,12 @@ require([
         //request json data from backend
         //$.ajax({url: "/censustract" , success : geoJsonToGraphics});
 
+        /*
         $.when($.ajax("/censustract") , $.ajax("/calculate?kvalue="+ kValue))
           .done(geoJsonToGraphics)
           .fail(alert("the calculate request has failed"));
+          */
+        $.ajax({url : "/calculate?kvalue=" + kValue, success : geoJsonToGraphics});
     }
 });
 

@@ -51,9 +51,21 @@ def findStats():
     print "about to run zonal statistics on " + destinationPath
     statsSummary = zonal_stats(destinationPath)
 
+    #join the statsToJSON information
+    print "starting to join feature and summary info"
+    featureCollectionString = open(r"C:\Users\Robert\Documents\Grad School\GEOG777\prj1\NitrateViewer\templates\cancer_tracts.geojson", "r").read()
+    featureCollectionObject = json.loads(featureCollectionString)
+    featureList = featureCollectionObject["features"]
+    for feature in featureList:
+        for summary in statsSummary:
+            if feature["properties"]["id"] == summary["id"]:
+                feature["stats"] = summary
+    print "finished joining spatial and non-spatial data"
+
+
     #convert the zonal stats results into a python dictionary and then convert into json and send out
     print "converting list of lists to JSON"
-    statsSummaryJSON = json.dumps({"stats" : statsSummary})
+    statsSummaryJSON = json.dumps(featureCollectionObject)
     print statsSummaryJSON
 
     #package the json into a response object and send to client machine
