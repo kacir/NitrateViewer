@@ -71,8 +71,11 @@ require([
       console.log(data);
       
       var graphicsArray = [];
+      var graphicsArrayStandardDev = [];
+      var nitrateSymbol = {};
+      var nitrateStandardDevSymbol = {};
 
-      var markerSymbolHigh = {
+      nitrateSymbol.high = {
         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
         color: [0, 0, 255],
         outline: { // autocasts as new SimpleLineSymbol()
@@ -81,7 +84,7 @@ require([
         }
       };
 
-      var markerSymbolLow = {
+      nitrateSymbol.low = {
         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
         color: [176, 224, 230],
         outline: { // autocasts as new SimpleLineSymbol()
@@ -90,7 +93,7 @@ require([
         }
       };
 
-      var markerSymbolMedium = {
+      nitrateSymbol.medium = {
         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
         color: [30, 144, 255],
         outline: { // autocasts as new SimpleLineSymbol()
@@ -99,7 +102,7 @@ require([
         }
       };
 
-      var markerSymbolNoData = {
+      nitrateSymbol.noData = {
         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
         color: [0, 0, 0],
         outline: { // autocasts as new SimpleLineSymbol()
@@ -107,6 +110,35 @@ require([
           width: 2
         }
       };
+
+      nitrateStandardDevSymbol.high = {
+        type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+        color: [128,128,0],
+        outline: { // autocasts as new SimpleLineSymbol()
+          color: [255,255,255],
+          width: 1
+        }
+      };
+
+      nitrateStandardDevSymbol.medium = {
+        type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+        color: [255,255,0],
+        outline: { // autocasts as new SimpleLineSymbol()
+          color: [255,255,255],
+          width: 1
+        }
+      };
+
+      nitrateStandardDevSymbol.low = {
+        type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+        color: [255,255,204],
+        outline: { // autocasts as new SimpleLineSymbol()
+          color: [255,255,255],
+          width: 1
+        }
+      };
+
+
 
       var pointPopuptemplate = {
         title: "Census Tract Point",
@@ -126,6 +158,27 @@ require([
           }]
         }]
       };
+
+      //put together symbol markers for each standard deviation break
+      var maxStandardDev = d3.max(data.features, function(element){
+        if (!(element.stats === null || element.stats === undefined)) {
+          return element.stats.std;
+        } else {
+          return null;
+        }
+      });
+      //put together symbol markers for each standard deviation break
+      var minStandardDev = d3.min(data.features, function(element){
+        if (!(element.stats === null || element.stats === undefined)) {
+          return element.stats.std;
+        } else {
+          return null;
+        }
+      });
+      //standard deviation breakpoints for the calculations
+      var midpointStandardDev = maxStandardDev - minStandardDev;
+      var quarterPointStandardDev = Math.abs(midpointStandardDev / 2) + minStandardDev;
+      var thirdQuarterPointStandardDev = midpointStandardDev + (midpointStandardDev / 2);
     
       for (i = 0; i < data.features.length; i++){
         var feature = data.features[i];
@@ -133,44 +186,65 @@ require([
 
         if (featureSummary === undefined){
           var pointAttributes = {id : -9999, mean : 0, std : 0};
-          var choosenSymbol =  markerSymbolNoData;
+          var choosenSymbolNitrate =  nitrateSymbol.noData;
+          var choosenSymbolStandardDev = nitrateSymbol.noData;
         } else {
           var pointAttributes = {id : featureSummary.id, mean : featureSummary.mean, std : featureSummary.std};
-          //symbolize according to catagory
+          //symbolize nitrate according to catagory
           if (featureSummary.mean < 2 ) {
-            var choosenSymbol = markerSymbolLow;
+            var choosenSymbolNitrate = nitrateSymbol.low;
           } else if (featureSummary.mean >= 2 && featureSummary.mean < 4.5){
-            var choosenSymbol = markerSymbolMedium;
+            var choosenSymbolNitrate = nitrateSymbol.medium;
           } else {
-            var choosenSymbol = markerSymbolHigh;
+            var choosenSymbolNitrate = nitrateSymbol.high;
           }
-          
+          //symbolize nitrate standard deviation according to catagory
+          if (featureSummary.std > midpointStandardDev && featureSummary.std < quarterPointStandardDev){
+            var choosenSymbolStandardDev = nitrateStandardDevSymbol.low;
+          } else if (featureSummary.std > quarterPointStandardDev && featureSummary.std < thirdQuarterPointStandardDev){
+            var choosenSymbolStandardDev = nitrateStandardDevSymbol.medium;
+          } else {
+            var choosenSymbolStandardDev = nitrateStandardDevSymbol.high;
+          }
+
         }
 
 
-        var tempPoint = {
+        var tempPointNitrate = {
           type : "point",
           longitude : feature.geometry.coordinates[0],
           latitude : feature.geometry.coordinates[1]
         };
     
-        var tempGrahpic = new Graphic ({
-          geometry: tempPoint,
-          symbol: choosenSymbol,
+        var tempGrahpicNitrate = new Graphic ({
+          geometry: tempPointNitrate,
+          symbol: choosenSymbolNitrate,
           attributes : pointAttributes,
           popupTemplate : pointPopuptemplate
         });
     
-        graphicsArray.push(tempGrahpic);
+        graphicsArray.push(tempGrahpicNitrate);
+
+        var tempGraphicStandardDev = new Graphic ({
+          geometry: tempPointNitrate,
+          symbol: choosenSymbolStandardDev,
+          attributes : pointAttributes,
+          popupTemplate : pointPopuptemplate
+        });
+
+        graphicsArrayStandardDev.push(tempGraphicStandardDev);
       }
       var kValue = $("input").val();
+      var standDevGraphicLayer = new GraphicsLayer ({graphics : graphicsArrayStandardDev, title: "Nitrate Std Dev (K = " + kValue + ")" });
       var masterGraphicLayer = new GraphicsLayer ({graphics : graphicsArray, title: "Nitrate Levels (K = " + kValue + ")" });
+
 
       
       console.log("finished getting graphics together adding to map");
 
       //add the graphics layer to the map
       map.add(masterGraphicLayer);
+      map.add(standDevGraphicLayer);
 
       console.log("starting to calculate the linear regression info");
       var regressionResults = linearRegression(data.regressionDataX, data.regressionDataY);
