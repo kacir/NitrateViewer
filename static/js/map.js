@@ -162,7 +162,6 @@ require([
         });
     
         graphicsArray.push(tempGrahpic);
-        //mapView.graphics.add(tempGrahpic);
       }
       var kValue = $("input").val();
       var masterGraphicLayer = new GraphicsLayer ({graphics : graphicsArray, title: "Nitrate Levels (K = " + kValue + ")" });
@@ -180,14 +179,52 @@ require([
       $("#correlationfactors").text("The R Squared Value is: " + regressionResults.r2.toFixed(5) + 
         ". The line of best fit formula is: Y = " + regressionResults.slope.toFixed(3) +  "X + " + regressionResults.intercept.toFixed(3));
 
+      
+      //create a linear scale to plot out the point data inside of the svg
+      var xreturner = function(d) {return d[1];};
+      var xscale = d3.scaleLinear()//x is the nitrate rate
+        .domain([d3.min(data.graphData, xreturner) , d3.max(data.graphData, xreturner)])
+        .range([0, graphWidth]);
+      var yreturner = function(d){return d[0];};
+      var yscale = d3.scaleLinear()//y is the cancer rate level
+        .domain([d3.max(data.graphData, yreturner) , d3.min(data.graphData, yreturner)])
+        .range([0, graphHeight]);
+      
+      console.log("the y max is: " + d3.max(data.graphData, yreturner));
+      console.log("the y min was : " + d3.min(data.graphData, yreturner));
+
+      console.log("the x min was: " + d3.min(data.graphData, xreturner));
+      console.log("the x max was " + d3.max(data.graphData, xreturner));
+      
+
       //convert the data into graphed information
       graphInterior.selectAll(".graphPoints")
         .data(data.graphData)
         .enter()
         .append("circle")
-        .attr("r", 5)
+        .attr("r", 2)
         .attr("fill" , "blue")
-        .attr("class" , "graphPoints");
+        .attr("class" , "graphPoints")
+        .attr("yvalue" , function(data){
+          return data[0];
+        })
+        .attr("xvalue" , function(data){
+          return data[1];
+        })
+        .attr("cy", function(data){
+          if (data[1] === undefined || data[0] === undefined){
+            return 0;
+          } else {
+            return yscale(data[0]);
+          }
+        })
+        .attr("cx", function(data){
+          if (data[1] === undefined || data[0] === undefined){
+            return 0;
+          } else {
+            return xscale(data[1]);
+          }
+        });
       
       //make a linear scale for the points y direction
       //make a linear scale for the points x direction
