@@ -53,6 +53,10 @@ def findStats():
 
     #join the statsToJSON information
     print "starting to join feature and summary info"
+    regressionDataX = []#secondary list that makes it easy for the front end to do linear regression
+    regressionDataY = []#secondary list that makes it easy for the front end to do linear regression
+    graphData = []
+
     featureCollectionString = open(r"C:\Users\Robert\Documents\Grad School\GEOG777\prj1\NitrateViewer\templates\cancer_tracts.geojson", "r").read()
     featureCollectionObject = json.loads(featureCollectionString)
     featureList = featureCollectionObject["features"]
@@ -60,8 +64,16 @@ def findStats():
         for summary in statsSummary:
             if feature["properties"]["id"] == summary["id"]:
                 feature["stats"] = summary
+                regressionDataX.append(summary["mean"])
+                regressionDataY.append(feature["properties"]["canrate"])
+                graphData.append([feature["properties"]["canrate"], summary["mean"]])
+
     print "finished joining spatial and non-spatial data"
 
+    #placing the regionssion data into the JSON response
+    featureCollectionObject["regressionDataX"] = regressionDataX
+    featureCollectionObject["regressionDataY"] = regressionDataY
+    featureCollectionObject["graphData"] = graphData
 
     #convert the zonal stats results into a python dictionary and then convert into json and send out
     print "converting list of lists to JSON"

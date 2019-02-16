@@ -8,10 +8,10 @@
   <!-- Style sheets -->
   <link rel="stylesheet" href="https://js.arcgis.com/4.10/esri/css/main.css">
   <link rel=stylesheet type="text/css" href= "{{ url_for('static',filename='css/style.css') }}" />
-
+  <!-- D3 data selection thing -->
   <script src="https://d3js.org/d3-selection.v1.min.js"></script>
+  <!-- jquery library -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
   <!--ESRI javascript api -->
   <script src="https://js.arcgis.com/4.10/"></script>
 
@@ -32,7 +32,7 @@
       </div>
       <p>The K Coefficent is a number that determines how far the infulence of a single location's nitrate concentration speads out over space.</p>
       <br/>
-
+      <p id="correlationfactors"><p>
       <svg id="graphsvg" width="500px" height="500px"></svg>
 
     </div>

@@ -16,6 +16,32 @@ function searchArray (subjectArray, targetID) {
   };
 };
 
+//linear regression formula taken from https://stackoverflow.com/questions/6195335/linear-regression-in-javascript
+function linearRegression(y,x){
+  var lr = {};
+  var n = y.length;
+  var sum_x = 0;
+  var sum_y = 0;
+  var sum_xy = 0;
+  var sum_xx = 0;
+  var sum_yy = 0;
+
+  for (var i = 0; i < y.length; i++) {
+
+      sum_x += x[i];
+      sum_y += y[i];
+      sum_xy += (x[i]*y[i]);
+      sum_xx += (x[i]*x[i]);
+      sum_yy += (y[i]*y[i]);
+  } 
+
+  lr['slope'] = (n * sum_xy - sum_x * sum_y) / (n*sum_xx - sum_x * sum_x);
+  lr['intercept'] = (sum_y - lr.slope * sum_x)/n;
+  lr['r2'] = Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
+
+  return lr;
+}
+
 require([
     "esri/Map",
     "esri/views/MapView",
@@ -138,13 +164,37 @@ require([
         graphicsArray.push(tempGrahpic);
         //mapView.graphics.add(tempGrahpic);
       }
-      var masterGraphicLayer = new GraphicsLayer ({graphics : graphicsArray, title: "Nitrate Levels" });
+      var kValue = $("input").val();
+      var masterGraphicLayer = new GraphicsLayer ({graphics : graphicsArray, title: "Nitrate Levels (K = " + kValue + ")" });
+
       
-      console.log("finished getting graphics together adding to map")
+      console.log("finished getting graphics together adding to map");
 
       //add the graphics layer to the map
       map.add(masterGraphicLayer);
-    
+
+      console.log("starting to calculate the linear regression info");
+      var regressionResults = linearRegression(data.regressionDataX, data.regressionDataY);
+      console.log(regressionResults);
+      //display the regression results on the front end
+      $("#correlationfactors").text("The R Squared Value is: " + regressionResults.r2.toFixed(5) + 
+        ". The line of best fit formula is: Y = " + regressionResults.slope.toFixed(3) +  "X + " + regressionResults.intercept.toFixed(3));
+
+      //convert the data into graphed information
+      graphInterior.selectAll(".graphPoints")
+        .data(data.graphData)
+        .enter()
+        .append("circle")
+        .attr("r", 5)
+        .attr("fill" , "blue")
+        .attr("class" , "graphPoints");
+      
+      //make a linear scale for the points y direction
+      //make a linear scale for the points x direction
+      //graph them to the cy and cx attributes of the circles
+      //add graphic scales on the x and y attribute axis
+
+
     };
     
 
