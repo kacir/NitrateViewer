@@ -1,9 +1,9 @@
 #viewDiv {
-  padding: 0;
-  margin: 0;
   height: 1000px;
-  width: 800px;
-  float: left;
+  width: 1000px;
+  position: fixed;
+  padding-left: 25px;
+
 }
 
 html, body {
@@ -15,6 +15,7 @@ html, body {
 #sidePanel {
   width: 500px;
   float: right;
+  position: inline;
 }
 
 h1 {

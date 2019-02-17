@@ -50,9 +50,7 @@ require([
     "esri/layers/FeatureLayer",
     "esri/PopupTemplate",
     "esri/Graphic",
-    "esri/geometry/Point",
-    "esri/layers/GraphicsLayer",
-    "esri/symbols/SimpleFillSymbol"
+    "esri/layers/GraphicsLayer"
   ], function(
     Map,
     MapView,
@@ -61,9 +59,7 @@ require([
     FeatureLayer,
     PopupTemplate,
     Graphic,
-    Point,
-    GraphicsLayer,
-    SimpleFillSymbol
+    GraphicsLayer
   ) {
 
     function geoJsonToGraphics (data) {
@@ -250,8 +246,13 @@ require([
       var regressionResults = linearRegression(data.regressionDataX, data.regressionDataY);
       console.log(regressionResults);
       //display the regression results on the front end
+      if (regressionResults.r2 >= 0.5){
+        var significanceText = "This means there is a high correlation between cancer rates and nitrate levels.";
+      } else {
+        var significanceText = "This means there is a low correlation between cancer rates and nitrate levels.";
+      }
       $("#correlationfactors").text("The R Squared Value is: " + regressionResults.r2.toFixed(5) + 
-        ". The line of best fit formula is: Y = " + regressionResults.slope.toFixed(3) +  "X + " + regressionResults.intercept.toFixed(3));
+        "." + significanceText + " The line of best fit formula is: Y = " + regressionResults.slope.toFixed(3) +  "X + " + regressionResults.intercept.toFixed(3));
 
       
       //create a linear scale to plot out the point data inside of the svg
@@ -373,7 +374,6 @@ require([
         shower.hide();
     } else {
         console.log("button has been pressed");
-        alert("button pressed for value: " + kValue);
 
         //make a request to the backend for a kml file, then add the kml file to the map
         //request json data from backend
