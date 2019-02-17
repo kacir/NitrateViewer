@@ -235,7 +235,7 @@ require([
         graphicsArrayStandardDev.push(tempGraphicStandardDev);
       }
       var kValue = $("input").val();
-      var standDevGraphicLayer = new GraphicsLayer ({graphics : graphicsArrayStandardDev, title: "Nitrate Std Dev (K = " + kValue + ")" });
+      var standDevGraphicLayer = new GraphicsLayer ({visible: false, graphics : graphicsArrayStandardDev, title: "Nitrate Std Dev (K = " + kValue + ")" });
       var masterGraphicLayer = new GraphicsLayer ({graphics : graphicsArray, title: "Nitrate Levels (K = " + kValue + ")" });
 
 
@@ -243,8 +243,8 @@ require([
       console.log("finished getting graphics together adding to map");
 
       //add the graphics layer to the map
-      map.add(masterGraphicLayer);
       map.add(standDevGraphicLayer);
+      map.add(masterGraphicLayer);
 
       console.log("starting to calculate the linear regression info");
       var regressionResults = linearRegression(data.regressionDataX, data.regressionDataY);
@@ -305,7 +305,7 @@ require([
       //graph them to the cy and cx attributes of the circles
       //add graphic scales on the x and y attribute axis
 
-
+      shower.hide();
     };
     
 
@@ -363,11 +363,14 @@ require([
      mapView.ui.add(layerList , "top-right");
    });
 
-   d3.select("#submit").on("click", function(){
+
+   var calculateStats = function(){
+    shower.show();
     var kValue = $("input").val();
 
     if (isNaN(kValue)) {
         alert("value typed and submitted is not a number");
+        shower.hide();
     } else {
         console.log("button has been pressed");
         alert("button pressed for value: " + kValue);
@@ -383,7 +386,15 @@ require([
           */
         $.ajax({url : "/calculate?kvalue=" + kValue, success : geoJsonToGraphics});
     }
-});
+}
+   d3.select("#submit").on("click", calculateStats);
+   $("input").keypress(function(e){
+      if (e.originalEvent.key === "Enter"){
+        console.log("enter key pressed!");
+        calculateStats();
+      }
+
+   });
 
 
 

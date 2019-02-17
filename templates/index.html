@@ -30,6 +30,7 @@
         <h4>K Coefficent Value</h4>
           <input type="text"></input>
         <button id="submit">Submit</button>
+        <img class="loaderToggle hidden" width="25" height="25" src="{{ url_for('static', filename='img/loading.gif') }}"></img>
       </div>
       <p>The K Coefficent is a number that determines how far the infulence of a single location's nitrate concentration speads out over space.</p>
       <br/>
@@ -40,6 +41,7 @@
   </div>
 </body>
   <!-- custom javascript -->
+  <script type="text/javascript" src="{{ url_for('static', filename='js/shower.js') }}" ></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/graph.js') }}" ></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/map.js') }}" ></script>
 
