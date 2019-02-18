@@ -6,9 +6,9 @@ var paddingBottom = 20;
 var paddingTop = 20;
 
 var paddingInteriorLeft = 50;
-var paddingInteriorRight = 50;
+var paddingInteriorRight = 10;
 var paddingInteriorBottom = 50;
-var paddingInteriorTop = 50;
+var paddingInteriorTop = 10;
 
 var svgWidth = 500;
 var svgHeight = 500;
@@ -31,13 +31,13 @@ var labelsGroup = graph.append("g")
 labelsGroup.append("text")
     .text("Nitrate Levels")
     .attr("text-anchor", "middle")
-    .attr("transform" , "translate(" + ((svgWidth - paddingLeft -  paddingRight) / 2) + "," + ((svgHeight - paddingBottom - paddingTop) - (paddingInteriorBottom / 2)) + ")" );
+    .attr("transform" , "translate(" + ((svgWidth - paddingLeft -  paddingRight) / 2) + "," + ((svgHeight - paddingBottom - paddingTop)) + ")" );
 
 // y axis label
 labelsGroup.append("text")
     .text("Cancer Rate")
     .attr("text-anchor" , "middle")
-    .attr("transform", "translate(" + (paddingLeft + (paddingInteriorLeft / 2)) + "," + ((svgHeight - paddingBottom - paddingTop) / 2) + "), rotate(-90)");
+    .attr("transform", "translate(" + (paddingLeft) + "," + ((svgHeight - paddingBottom - paddingTop) / 2) + "), rotate(-90)");
 
 
 var graphInterior = graph.append("g")

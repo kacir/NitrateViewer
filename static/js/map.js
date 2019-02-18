@@ -300,6 +300,18 @@ require([
             return xscale(data[1]);
           }
         });
+
+        //add y axis ticks
+        var yAxis = d3.axisLeft().scale(yscale);
+        graphInterior.append("g")
+          .classed("axis-y", true)
+          .call(yAxis);
+
+        var xAxis = d3.axisBottom().scale(xscale);
+        graphInterior.append("g")
+          .classed("axis-x", true)
+          .attr("transform" , "translate( 0 ," + graphHeight + ")")
+          .call(xAxis);
       
       //make a linear scale for the points y direction
       //make a linear scale for the points x direction
