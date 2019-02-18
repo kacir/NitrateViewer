@@ -52,3 +52,32 @@ header {
   height: 1000px;
   float: right;
 }
+
+#customlegend {
+  width: 200px;
+  top: 200px;
+  left: 50px;
+  position: absolute;
+  z-index: 99;
+  border-radius: 8px;
+  border: 2px solid gray;
+  color: gray;
+  background: white;
+  padding: 10px;
+  opacity: 0.9;
+}
+
+.legenditem {
+  list-style-type: none;
+}
+
+
+.legenditem ul {
+  padding-left: 10px;
+  padding-bottom: 5px;
+}
+
+#customlegendlist {
+  padding-left: 15px;
+}
+

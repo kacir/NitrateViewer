@@ -24,6 +24,94 @@
 <body>
   <header> <h1>Wisconsin Cancer Rates Correlated with Nitrate Levels</h1> </header>
   <div id="divgrouper">
+    <div id="customlegend">
+      <h3>Legend</h3>
+      <ul id="customlegendlist">
+        <li class="legenditem">
+          <span>Caner Rates</span>
+          <ul>
+            <li class="legenditem">
+              <svg width="15" height="15">
+                <rect width="15" stroke="black" height="15" fill="red"></rect>
+              </svg>
+              <span>- 100%</span>
+            </li>
+            <li class="legenditem">
+              <svg width="15" height="15">
+                <rect width="15" stroke="black" height="15" fill="red" opacity="0.5"></rect>
+              </svg>
+              <span>- 50%</span>
+            </li>
+            <li class="legenditem">
+              <svg width="15" height="15">
+                <rect width="15" stroke="black" height="15" fill="red" opacity="0.1"></rect>
+              </svg>
+              <span>- 0%</span>
+            </li>
+          </ul>
+
+        </li>
+        <li class="legenditem postanalysislegenditem hidden">
+          <span>Nitrate Levels (PPM)</span>
+          <ul>
+            <li class="legenditem">
+              <svg width="20" height="20">
+                <circle stroke="white" r="8" cy="10" cx="10" fill="rgb(0, 0, 255)"></circle>
+              </svg>
+              <span>- 4+ PPM</span>
+            </li>
+            <li class="legenditem">
+                <svg width="20" height="20">
+                  <circle stroke="white" r="8" cy="10" cx="10" fill="rgb(30, 144, 255)"></circle>
+                </svg>
+                <span>- 2-4 PPM</span>
+            </li>
+            <li class="legenditem">
+                <svg width="20" height="20">
+                  <circle stroke="white" r="8" cy="10" cx="10" fill="rgb(176, 224, 230)"></circle>
+                </svg>
+                <span>- 0-2 PPM</span>
+            </li>
+            <li class="legenditem">
+                <svg width="20" height="20">
+                  <circle stroke="white" r="8" cy="10" cx="10" fill="rgb(0, 0, 0)"></circle>
+                </svg>
+                <span>No Data</span>
+            </li>
+          </ul>
+
+        </li>
+        <li class="legenditem postanalysislegenditem hidden">
+          <span>Standard Deviation</span>
+          <ul>
+              <li class="legenditem">
+                  <svg width="20" height="20">
+                    <circle stroke="white" r="8" cy="10" cx="10" fill="rgb(128,128,0)"></circle>
+                  </svg>
+                  <span>High</span>
+              </li>
+              <li class="legenditem">
+                  <svg width="20" height="20">
+                    <circle stroke="white" r="8" cy="10" cx="10" fill="rgb(255,255,0)"></circle>
+                  </svg>
+                  <span>Medium</span>
+              </li>  
+              <li class="legenditem">
+                  <svg width="20" height="20">
+                    <circle stroke="white" r="8" cy="10" cx="10" fill="rgb(255,255,204)"></circle>
+                  </svg>
+                  <span>Low</span>
+              </li>  
+              <li class="legenditem">
+                  <svg width="20" height="20">
+                    <circle stroke="white" r="8" cy="10" cx="10" fill="rgb(0, 0, 0)"></circle>
+                  </svg>
+                  <span>No Data</span>
+              </li>    
+          </ul>
+        </li>
+      </ul>
+    </div>
     <div id="viewDiv"></div>
     <div class="spacer"></div>
     <div id="sidePanel">

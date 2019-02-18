@@ -307,6 +307,7 @@ require([
       //add graphic scales on the x and y attribute axis
 
       shower.hide();
+      shower.legend();
     };
     
 
