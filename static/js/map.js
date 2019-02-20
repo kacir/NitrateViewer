@@ -70,19 +70,22 @@ require([
       var graphicsArrayStandardDev = [];
       var nitrateSymbol = {};
       var nitrateStandardDevSymbol = {};
+      var pointSymbolSize = "10px"
 
       nitrateSymbol.high = {
         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
         color: [0, 0, 255],
+        size: pointSymbolSize,
         outline: { // autocasts as new SimpleLineSymbol()
           color: [255, 255, 255],
-          width: 2
+          width: 1
         }
       };
 
       nitrateSymbol.low = {
         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
         color: [176, 224, 230],
+        size: pointSymbolSize,
         outline: { // autocasts as new SimpleLineSymbol()
           color: [255, 255, 255],
           width: 1
@@ -92,24 +95,27 @@ require([
       nitrateSymbol.medium = {
         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
         color: [30, 144, 255],
+        size: pointSymbolSize,
         outline: { // autocasts as new SimpleLineSymbol()
           color: [255, 255, 255],
-          width: 2
+          width: 1
         }
       };
 
       nitrateSymbol.noData = {
         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
         color: [0, 0, 0],
+        size: pointSymbolSize,
         outline: { // autocasts as new SimpleLineSymbol()
           color: [25, 25, 25],
-          width: 2
+          width: 1
         }
       };
 
       nitrateStandardDevSymbol.high = {
         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
         color: [128,128,0],
+        size: pointSymbolSize,
         outline: { // autocasts as new SimpleLineSymbol()
           color: [255,255,255],
           width: 1
@@ -119,6 +125,7 @@ require([
       nitrateStandardDevSymbol.medium = {
         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
         color: [255,255,0],
+        size: pointSymbolSize,
         outline: { // autocasts as new SimpleLineSymbol()
           color: [255,255,255],
           width: 1
@@ -128,16 +135,35 @@ require([
       nitrateStandardDevSymbol.low = {
         type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
         color: [255,255,204],
+        size: pointSymbolSize,
         outline: { // autocasts as new SimpleLineSymbol()
           color: [255,255,255],
           width: 1
         }
       };
 
+      var pointPopuptemplateNitrate = {
+        title: "Census Tract Point (Nitrate)",
+        content: [{
+          type: "fields",
+          fieldInfos: [{
+            fieldName: "id",
+            label : "Tract ID"
+          }, {
+            fieldName: "mean",
+            label : "Mean Nitrate Level",
+            format : {places : 4, digitSeparator : false}
+          }, {
+            fieldName: "std",
+            label : "Stand Deviation Within Tract",
+            format : {places : 4, digitSeparator : false}
+          }]
+        }]
+      };
 
 
-      var pointPopuptemplate = {
-        title: "Census Tract Point",
+      var pointPopuptemplateStd = {
+        title: "Census Tract Point (Standard Deviation)",
         content: [{
           type: "fields",
           fieldInfos: [{
@@ -172,9 +198,9 @@ require([
         }
       });
       //standard deviation breakpoints for the calculations
-      var midpointStandardDev = maxStandardDev - minStandardDev;
-      var quarterPointStandardDev = Math.abs(midpointStandardDev / 2) + minStandardDev;
-      var thirdQuarterPointStandardDev = midpointStandardDev + (midpointStandardDev / 2);
+      var standardDevRange = Math.abs(maxStandardDev - minStandardDev);
+      var StandardDev1ThirdEnd = (standardDevRange / 3) + minStandardDev;
+      var StandardDev2ThirdEnd = (standardDevRange / 3) + (standardDevRange / 3) + minStandardDev;
     
       for (i = 0; i < data.features.length; i++){
         var feature = data.features[i];
@@ -195,9 +221,9 @@ require([
             var choosenSymbolNitrate = nitrateSymbol.high;
           }
           //symbolize nitrate standard deviation according to catagory
-          if (featureSummary.std > midpointStandardDev && featureSummary.std < quarterPointStandardDev){
+          if (featureSummary.std > minStandardDev && featureSummary.std < StandardDev1ThirdEnd){
             var choosenSymbolStandardDev = nitrateStandardDevSymbol.low;
-          } else if (featureSummary.std > quarterPointStandardDev && featureSummary.std < thirdQuarterPointStandardDev){
+          } else if (featureSummary.std > StandardDev1ThirdEnd && featureSummary.std < StandardDev2ThirdEnd){
             var choosenSymbolStandardDev = nitrateStandardDevSymbol.medium;
           } else {
             var choosenSymbolStandardDev = nitrateStandardDevSymbol.high;
@@ -216,7 +242,7 @@ require([
           geometry: tempPointNitrate,
           symbol: choosenSymbolNitrate,
           attributes : pointAttributes,
-          popupTemplate : pointPopuptemplate
+          popupTemplate : pointPopuptemplateNitrate
         });
     
         graphicsArray.push(tempGrahpicNitrate);
@@ -225,7 +251,7 @@ require([
           geometry: tempPointNitrate,
           symbol: choosenSymbolStandardDev,
           attributes : pointAttributes,
-          popupTemplate : pointPopuptemplate
+          popupTemplate : pointPopuptemplateStd
         });
 
         graphicsArrayStandardDev.push(tempGraphicStandardDev);
@@ -340,14 +366,10 @@ require([
         fieldInfos: [{
           fieldName: "canrate",
           label: "Cancer Rate",
-          format : {places : 0, digitSeparator : true},
+          format : {places : 2, digitSeparator : true},
           visible: true
-        }, {
-          fieldName: "nitrate",
-          label: "Nitrate Level",
-          format : {places : 0, digitSeparator : true},
-          visible: true
-        }, {
+        },
+        {
           fieldName: "GEOID10",
           label: "GEOID10",
           visible: true
@@ -367,7 +389,7 @@ require([
     var mapView = new MapView({
       container: "viewDiv",
       map: map,
-      zoom : 7,
+      zoom : 6,
       center : [ -89.56 , 44.71]
     });
 
