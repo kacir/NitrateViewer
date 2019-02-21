@@ -269,7 +269,7 @@ require([
       map.add(masterGraphicLayer);
 
       console.log("starting to calculate the linear regression info");
-      var regressionResults = linearRegression(data.regressionDataX, data.regressionDataY);
+      var regressionResults = linearRegression(data.regressionDataY, data.regressionDataX);
       console.log(regressionResults);
       //display the regression results on the front end
       if (regressionResults.r2 >= 0.5){
@@ -339,10 +339,24 @@ require([
           .attr("transform" , "translate( 0 ," + graphHeight + ")")
           .call(xAxis);
       
-      //make a linear scale for the points y direction
-      //make a linear scale for the points x direction
-      //graph them to the cy and cx attributes of the circles
-      //add graphic scales on the x and y attribute axis
+      //Add trend line to the map
+      //find x,y value for bottom left portion graph, (y is y intercept to best fit formula)
+      var x1TrendLine = d3.min(data.graphData, xreturner);
+      var y1TrendLine = (x1TrendLine * regressionResults.slope) + regressionResults.intercept;
+      //find x,y value for top right postion of graph
+      var x2TrendLine = d3.max(data.graphData, xreturner);
+      var y2TrendLine = (x2TrendLine * regressionResults.slope) + regressionResults.intercept;
+      //add line to graph interior
+      graphInterior.append("line")
+        .attr("stroke", "rgb(255,0,0)")
+        .attr("stroke-width" , "2")
+        .classed("trendline" , true)
+        .attr("stroke-dasharray", "20")
+        .attr("x1" , xscale(x1TrendLine))
+        .attr("y1" , yscale(y1TrendLine))
+        .attr("x2" , xscale(x2TrendLine))
+        .attr("y2" , yscale(y2TrendLine));
+
 
       shower.hide();
       shower.legend();

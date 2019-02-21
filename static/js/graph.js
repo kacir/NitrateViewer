@@ -45,6 +45,7 @@ var graphInterior = graph.append("g")
     .attr("transform", "translate(" + (paddingLeft + paddingInteriorLeft) + "," + (paddingTop + paddingInteriorTop) + ")");
 
 graphInterior.append("rect")
+    .attr("id" , "graphInteriorrect")
     .attr("width" , graphWidth)
     .attr("height" , graphHeight)
     .attr("style", "fill:rgb(230,230,230)");
