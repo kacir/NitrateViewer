@@ -50,3 +50,52 @@ graphInterior.append("rect")
     .attr("height" , graphHeight)
     .attr("style", "fill:rgb(230,230,230)");
 
+//append a legend for the graph into the graph space
+graphLegend = graphInterior.append("g")
+    .attr("id", "graphlegend")
+    .attr("transform" , "translate(" + (graphWidth * 0.7) + ", 20)");
+
+graphLegend.append("rect")
+    .attr("stroke" , "black")
+    .attr("fill", "white")
+    .attr("stroke-width" , "1")
+    .attr("width", "90")
+    .attr("height" , "60");
+
+graphLegend.append("text")
+    .text("Legend")
+    .classed("graph-legend-item", true)
+    .style("fill", "black")
+    .attr("text-anchor", "start")
+    .attr("transform" , "translate(20, 17)");
+
+graphLegend.append("text")
+    .text("Census Tract")
+    .classed("graph-legend-item", true)
+    .attr("font-size" , "12")
+    .attr("text-anchor", "start")
+    .attr("transform" , "translate(20, 34)");
+
+graphLegend.append("text")
+    .text("Trendline")
+    .classed("graph-legend-item", true)
+    .attr("font-size" , "12")
+    .attr("text-anchor", "start")
+    .attr("transform" , "translate(30, 54)");
+
+graphLegend.append("circle")
+    .classed("graph-legend-item", true)
+    .attr("r", 2)
+    .attr("fill" , "blue")
+    .attr("transform" , "translate(10, 30)");
+
+graphLegend.append("line")
+    .classed("graph-legend-item", true)
+    .attr("stroke", "rgb(255,0,0)")
+    .attr("stroke-width" , "2")
+    .attr("stroke-dasharray", "20")
+    .attr("x2", 25)
+    .attr("y2", 0)
+    .attr("x1", 0)
+    .attr("y1", 0)
+    .attr("transform" , "translate(5, 50)");
