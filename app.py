@@ -3,7 +3,6 @@ import gdal, osr
 import os, os.path
 from customZonalStats import zonal_stats
 import json
-#from zonal_stats import zonal_stats
 
 app = Flask(__name__)
 
@@ -17,6 +16,7 @@ def home():
 
 @app.route("/censustract")
 def censusTracks():
+    """return the census tract points as geojson"""
     return render_template("cancer_tracts.geojson")
 
 
@@ -37,7 +37,7 @@ def findStats():
     print "k value has been succesfully found. it is: " + str(kValue)
 
 
-
+    #temp path for a nitrate raster for the particular k value
     destinationPath = r"C:\Users\Robert\Documents\Grad School\GEOG777\prj1\NitrateViewer\nitrateRasters\k" + str(kValue) + ".tiff"
     
     #if the raster does not exist then calculate the new raster
@@ -55,8 +55,10 @@ def findStats():
     print "starting to join feature and summary info"
     regressionDataX = []#secondary list that makes it easy for the front end to do linear regression
     regressionDataY = []#secondary list that makes it easy for the front end to do linear regression
-    graphData = []
+    graphData = []#list that will make it easy for d3 to plot the points on a svg graph
 
+    #loop through every single point feature in the geojson points file
+    #and join to the nonspatial data from the zonal stats function
     featureCollectionString = open(r"C:\Users\Robert\Documents\Grad School\GEOG777\prj1\NitrateViewer\templates\cancer_tracts.geojson", "r").read()
     featureCollectionObject = json.loads(featureCollectionString)
     featureList = featureCollectionObject["features"]
@@ -70,7 +72,7 @@ def findStats():
 
     print "finished joining spatial and non-spatial data"
 
-    #placing the regionssion data into the JSON response
+    #placing the regression data into the JSON response
     featureCollectionObject["regressionDataX"] = regressionDataX
     featureCollectionObject["regressionDataY"] = regressionDataY
     featureCollectionObject["graphData"] = graphData

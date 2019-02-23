@@ -24,6 +24,7 @@
 <body>
   <header> <h1>Wisconsin Cancer Rates Correlated with Nitrate Levels</h1> </header>
   <div id="divgrouper">
+    <!-- the custom legend is placed custom on top of all of the other content statically on the page. only way it works with ESRI javascript API -->
     <div id="customlegend">
       <h3>Legend</h3>
       <ul id="customlegendlist">
@@ -125,6 +126,7 @@
       </div>
       <p>The K Coefficent is a number that determines how far the infulence of a single location's nitrate concentration speads out over space.</p>
       <br/>
+      <!-- correlation factors paragraph will be autopopulated -->
       <p id="correlationfactors"><p>
       <svg id="graphsvg" width="500px" height="500px"></svg>
 

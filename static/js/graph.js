@@ -1,3 +1,4 @@
+//module sets up the svg graphic programatically based on a hard coded set of graph dimentions and padding
 var graph = d3.select("#graphsvg");
 
 var paddingLeft = 20;
@@ -13,16 +14,19 @@ var paddingInteriorTop = 10;
 var svgWidth = 500;
 var svgHeight = 500;
 
+//dimentions of the graph interior where the points will be
 var graphWidth = svgWidth - paddingLeft - paddingRight - paddingInteriorLeft - paddingInteriorRight;
 var graphHeight = svgHeight - paddingBottom - paddingTop - paddingInteriorBottom - paddingInteriorTop;
 
 //generate groups for graph labels and other info to show
+//background rectable for the entire svg
 graph.append("rect")
     .classed("svg-background", true)
     .attr("width" , svgWidth.toString())
     .attr("height" , svgHeight.toString())
     .attr("style", "fill:rgb(255,255,255)");
 
+//group for the axis labels
 var labelsGroup = graph.append("g")
     .classed("labels", true)
     .attr("transform", "translate(" + paddingLeft + "," + paddingTop + ")");
@@ -39,16 +43,21 @@ labelsGroup.append("text")
     .attr("text-anchor" , "middle")
     .attr("transform", "translate(" + (paddingLeft) + "," + ((svgHeight - paddingBottom - paddingTop) / 2) + "), rotate(-90)");
 
-
+//graph group that will contain everything in the interior of the graph like the legend, points and trendline
 var graphInterior = graph.append("g")
     .classed("graphInterior", true)
     .attr("transform", "translate(" + (paddingLeft + paddingInteriorLeft) + "," + (paddingTop + paddingInteriorTop) + ")");
 
+//background color rectagle for svg
 graphInterior.append("rect")
     .attr("id" , "graphInteriorrect")
     .attr("width" , graphWidth)
     .attr("height" , graphHeight)
     .attr("style", "fill:rgb(230,230,230)");
+
+
+
+
 
 //append a legend for the graph into the graph space
 graphLegend = graphInterior.append("g")

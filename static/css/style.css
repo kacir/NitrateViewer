@@ -1,13 +1,3 @@
-#viewDiv {
-  height: 1000px;
-  height: 100%;
-  width: 1000px;
-  width: 50%;
-  position: absolute;
-  padding-left: 25px;
-
-}
-
 html, body {
   padding: 0;
   margin: 0;
@@ -18,14 +8,6 @@ body {
   background-color: #99CBF1;
 }
 
-#sidePanel {
-  width: 500px;
-  width: 30%;
-  float: right;
-  position: inline;
-  margin: auto;
-}
-
 h1 {
     text-align: center;
     margin-top: 0px;
@@ -34,6 +16,9 @@ h1 {
     color: #F2F2F2;;
 }
 
+/*dampen the the minor text on 
+the page to a grey rather than a black.
+The black stands out too much on the page*/
 h2, p, h4 {
   color: #3C3C3C;
 }
@@ -42,10 +27,32 @@ header {
     background-color: #0B7EFF;
 }
 
+/*The div contains the ESRI map object. */
+#viewDiv {
+  height: 1000px;
+  height: 100%;
+  width: 1000px;
+  width: 50%;
+  position: absolute;
+  padding-left: 25px;
+
+}
+
+/* The side panel div containing the graph details */
+#sidePanel {
+  width: 500px;
+  width: 30%;
+  float: right;
+  position: inline;
+  margin: auto;
+}
+
+/*class that is programtically added or removed to give the user feedback by making different elements visable or invisable*/
 .hidden {
   display: none;
 }
 
+/*random spacer divs which help make space to the left and right of the graph information panel*/
 .spacer {
   width: 20px;
   width: 5%;
@@ -53,6 +60,7 @@ header {
   float: right;
 }
 
+/*custom map legend that is super imposed on top of the map*/
 #customlegend {
   width: 200px;
   top: 200px;
@@ -66,17 +74,16 @@ header {
   padding: 10px;
   opacity: 0.9;
 }
-
+/*remove the dots from each of the custom map legend elements*/
 .legenditem {
   list-style-type: none;
 }
 
-
+/*ajust spacing between elements in the legend*/
 .legenditem ul {
   padding-left: 10px;
   padding-bottom: 5px;
 }
-
 #customlegendlist {
   padding-left: 15px;
 }
