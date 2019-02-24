@@ -433,7 +433,7 @@ require([
           .done(geoJsonToGraphics)
           .fail(alert("the calculate request has failed"));
           */
-        $.ajax({url : "/calculate?kvalue=" + kValue, success : geoJsonToGraphics});
+        $.ajax({url : "/calculate?kvalue=" + kValue, success : geoJsonToGraphics, timeout : 30000});
     }
 }
    d3.select("#submit").on("click", calculateStats);

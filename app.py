@@ -98,4 +98,4 @@ def calculateNitrateRaster(kValue, destinationPath):
     outBounds = [294822.7680654586292803, 225108.6378120621666312, 774373.8599878594977781, 759802.2332637654617429]
     outRasterSRS = osr.SpatialReference()
     outRasterSRS.ImportFromEPSG(3070)
-    gdal.Grid(destinationPath, wellShapefilePath, width=1000, height=1000, outputType=gdal.GDT_Float32, zfield="nitr_ran", algorithm=algorithmOptions, outputBounds=outBounds, outputSRS=outRasterSRS)
+    gdal.Grid(destinationPath, wellShapefilePath, width=944, height=1053, outputType=gdal.GDT_Float32, zfield="nitr_ran", algorithm=algorithmOptions, outputBounds=outBounds, outputSRS=outRasterSRS)
