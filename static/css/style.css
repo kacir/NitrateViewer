@@ -61,7 +61,6 @@ header {
 
 /*custom map legend that is super imposed on top of the map*/
 #customlegend {
-  width: 200px;
   top: 200px;
   left: 50px;
   position: absolute;
@@ -72,6 +71,12 @@ header {
   background: white;
   padding: 10px;
   opacity: 0.9;
+}
+
+#legendheader {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  text-align: center;
 }
 /*remove the dots from each of the custom map legend elements*/
 .legenditem {
@@ -85,5 +90,6 @@ header {
 }
 #customlegendlist {
   padding-left: 15px;
+  margin-top: 0.75%;
 }
 
