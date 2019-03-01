@@ -95,7 +95,7 @@ graphLegend.append("text")
 graphLegend.append("circle")
     .classed("graph-legend-item", true)
     .attr("r", 2)
-    .attr("fill" , "blue")
+    .attr("fill" , "black")
     .attr("transform" , "translate(10, 30)");
 
 graphLegend.append("line")

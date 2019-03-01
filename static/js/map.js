@@ -303,8 +303,8 @@ require([
         .data(data.graphData)
         .enter()
         .append("circle")
-        .attr("r", 2)
-        .attr("fill" , "blue")
+        .attr("r", 1.5)
+        .attr("fill" , "black")
         .attr("class" , "graphPoints")
         .attr("yvalue" , function(data){
           return data[0];
@@ -349,7 +349,7 @@ require([
       //add line to graph interior
       graphInterior.append("line")
         .attr("stroke", "rgb(255,0,0)")
-        .attr("stroke-width" , "2")
+        .attr("stroke-width" , "5")
         .classed("trendline" , true)
         .attr("stroke-dasharray", "20")
         .attr("x1" , xscale(x1TrendLine))
