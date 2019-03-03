@@ -119,7 +119,7 @@
       <h2>Correlation Between Factors</h1>
       <br/>
       <div id="button-container">
-        <h4>K Coefficent Value</h4>
+        <h4 id="k-value-header">K Coefficent Value</h4>
           <input type="text"></input>
         <button id="submit">Submit</button>
         <img class="loaderToggle hidden" width="25" height="25" src="{{ url_for('static', filename='img/loading.gif') }}"></img>
@@ -129,6 +129,7 @@
       <!-- correlation factors paragraph will be autopopulated -->
       <p id="correlationfactors"><p>
       <svg class="hidden" id="graphsvg" width="500px" height="500px"></svg>
+      <button onclick="window.print();return false;" >Print Copy of Results</button>
 
     </div>
     <div class="spacer"></div>

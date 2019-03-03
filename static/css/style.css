@@ -93,3 +93,26 @@ header {
   margin-top: 0.75%;
 }
 
+
+#viewDiv.viewDiv-after-analysis {
+  width: 60%;
+}
+
+#sidePanel.sidePanel-after-analysis {
+  width: 30%;
+}
+
+@media print {
+  #viewDiv.viewDiv-after-analysis {
+    display: none;
+  }
+  #customlegend {
+    display: none;
+  }
+  #sidePanel.sidePanel-after-analysis {
+    width: 80%;
+  }
+  input, button, #k-value-header, br{
+    display: none;
+  }
+}

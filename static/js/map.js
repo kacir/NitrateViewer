@@ -117,7 +117,7 @@ require([
         color: [128,128,0],
         size: pointSymbolSize,
         outline: { // autocasts as new SimpleLineSymbol()
-          color: [255,255,255],
+          color: [169,169,169],
           width: 1
         }
       };
@@ -127,7 +127,7 @@ require([
         color: [255,255,0],
         size: pointSymbolSize,
         outline: { // autocasts as new SimpleLineSymbol()
-          color: [255,255,255],
+          color: [169,169,169],
           width: 1
         }
       };
@@ -137,7 +137,7 @@ require([
         color: [255,255,204],
         size: pointSymbolSize,
         outline: { // autocasts as new SimpleLineSymbol()
-          color: [255,255,255],
+          color: [169,169,169],
           width: 1
         }
       };

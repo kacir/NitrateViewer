@@ -11,6 +11,8 @@ shower.hide = function(){
 shower.legend = function(){
     $(".postanalysislegenditem").removeClass("hidden");
     $("svg").removeClass("hidden");
-    d3.select("#viewDiv").transition().style("width", "60%");
-    d3.select("#sidePanel").transition().style("width" , "30%");
+    $("#viewDiv").addClass("viewDiv-after-analysis");
+    $("#sidePanel").addClass("sidePanel-after-analysis");
+    //d3.select("#viewDiv").transition().style("width", "60%");
+    //d3.select("#sidePanel").transition().style("width" , "30%");
 }
