@@ -13,6 +13,7 @@ shower.legend = function(){
     $("svg").removeClass("hidden");
     $("#viewDiv").addClass("viewDiv-after-analysis");
     $("#sidePanel").addClass("sidePanel-after-analysis");
+    $("#printresults").removeClass("hidden");
     //d3.select("#viewDiv").transition().style("width", "60%");
     //d3.select("#sidePanel").transition().style("width" , "30%");
 }
